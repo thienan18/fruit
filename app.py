@@ -1,6 +1,5 @@
 from flask import Flask, render_template, Response, url_for, redirect, session, request, send_from_directory, flash, jsonify
 import cv2
-import os
 import smtplib
 from flask import redirect
 from ultralytics import YOLO
@@ -390,7 +389,4 @@ def doimk():
 if __name__ == "__main__":
     email_thread = Thread(target=gui_email, daemon=True)
     email_thread.start()  # 🚀 Bắt đầu gửi email mỗi 1 tiếng
-
-    port = int(os.environ.get("PORT", 10000))  # Lấy PORT từ biến môi trường
-    app.run(host='0.0.0.0', port=port)
-
+    app.run(debug=True, port=5001)
