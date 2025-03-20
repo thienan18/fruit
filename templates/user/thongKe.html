@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .body-report {
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            width: 48%;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .chart-container:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="container mt-5 pt-5">
+    <center><h1 class="mt-5 pt-5">Thống kê - Báo cáo</h1></center>
+
+    <div class="row d-flex justify-content-center">
+        <div class="chart-container col-md-5 mx-2">
+            <canvas id="fruitStatusChart"></canvas>
+        </div>
+
+        <div class="col-6">
+            <table class="table">
+                <tr>
+                    <th>Khay Hàng</th>
+                    <th>Hình ảnh</th>
+                    <th>Số Lượng Tổng</th>
+                    <th>Tỷ Lệ Hư Hỏng (%)</th>
+                </tr>
+                {% for row in thongke %}
+                <tr>
+                    <td>{{ row.4 }}</td>
+                    <td><img style="width: 50px; border-radius: 5px;"></td>
+                    <td>{{ row.3 }}</td>
+                    <td>{{ row.2 }}%</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="container text-center mt-4">
+                <a href="{{ url_for('thongke.xuatbaocao') }}" class="btn btn-primary p-3 text-white">Xuất Báo Cáo</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Biểu đồ số lượng trái cây tốt vs hư hỏng
+            const ctx1 = document.getElementById("fruitStatusChart");
+            if (ctx1) {
+                new Chart(ctx1.getContext("2d"), {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Tốt", "Hư hỏng"],
+                        datasets: [{
+                            data: ["{{ binhthuong }}", "{{ huhong }}"],
+                            backgroundColor: ["#81c408", "#dc3545"]
+                        }]
+                    }
+                });
+            }
+        });
+    </script>
+
+</div>
+{% endblock %}

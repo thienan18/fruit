@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Thông tin loại trái cây</title>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Thông Tin Loại Trái Cây</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="#">Danh Mục</a></li>
+                <li class="breadcrumb-item active text-white">Thông Tin Loại Trái Cây</li>
+            </ol>
+        </div>
+       <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite ">
+            <div class="container py-3">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3"></div>
+                            <div class="col-6">
+                                <form method="GET" action="{{ url_for('chiTietLoai.chitiet') }}" class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" name="timkiem1" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                    <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="row g-4 justify-content-center">
+
+                                        <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col"></th>
+                                                <th scope="col">Mã loại</th>
+                                                <th scope="col">Tên loại</th>
+                                                <th scope="col">Xuất xứ</th>
+                                                <th scope="col">Số lượng</th>
+                                                <th scope="col">Tên trái cây</th>
+                                                <th scope="col">Ghi chú</th>
+                                              </tr>
+                                            </thead>
+                                            {% for row in loaitraicay %}
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ url_for('static', filename='img/' + row.5 if row.5 and row.5 != 'None' else 'img/apple.jpg') }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.0 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.1 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.2 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.8 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.7 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.3 }}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+{% endblock %}

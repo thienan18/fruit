@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Thông tin trái cây</title>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Thông Tin Trái Cây</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="#">Danh Mục</a></li>
+                <li class="breadcrumb-item active text-white">Thông Tin Trái Cây</li>
+            </ol>
+        </div>
+       <!-- Fruits Shop Start-->
+       {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container-fluid fruite">
+            <div class="container py-3">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3">
+                                <button class="btn btn-primary p-3 text-white " data-bs-toggle="modal" data-bs-target="#myModal">Thêm trái cây</button>
+                            </div>
+                            <div class="col-6">
+                                <form method="GET" action="{{ url_for('traiCay.traicay') }}" class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" name="timkiem" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                    <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="row g-4 justify-content-right">
+                                    {% for row in traicay %}
+                                    <div class="col-md-6 col-lg-6 col-xl-3">
+                                        <div class="rounded position-relative fruite-item">
+                                            <div class="fruite-img">
+                                                <img src="{{ url_for('static', filename='img/' + row.2 if row.2 and row.2 != 'None' else 'img/apple.jpg') }}" class="img-fluid w-100 rounded-top" alt="">
+                                            </div>
+                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                <h4>{{ row.1 }}</h4>
+                                                <p>Mã trái cây: {{ row.0 }}</p>
+                                                <p>Ghi chú: {{ row.3 }}</p>
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                    <a href="/update1/{{ row.0 }}" class="btn border border-secondary rounded-pill px-3 text-primary" data-bs-toggle="modal" data-bs-target="#modaledit{{row.0}}">Sửa</a>
+                                                    <a href="/delete1/{{ row.0 }}" class="btn border border-secondary rounded-pill px-3 text-primary">Xóa</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+<!--Insert-->
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div  class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Thêm trái cây</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('traiCay.insert1') }}" method="POST">
+<!--                          <div class=" form-group pb-3">-->
+<!--                            <label>Mã trái cây</label>-->
+<!--                            <input type="text" class="form-control" name="matraicay" placeholder="mã trái cây">-->
+<!--                          </div>-->
+                          <div class=" form-group pb-3">
+                            <label >Tên trái cây</label>
+                            <input type="text" class="form-control" name="tentraicay" placeholder="tên trái cây">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Hình Ảnh</label>
+                            <input type="file" class="form-control" name="hinhanh" placeholder="hình ảnh">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" placeholder="ghi chú">
+                          </div>
+                          <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--Update-->
+{% for row in traicay %}
+        <div class="modal fade" id="modaledit{{row.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div  class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sửa trái cây</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('traiCay.update1') }}" method="POST">
+                          <div class=" form-group pb-3">
+                            <label>Mã trái cây</label>
+                            <input type="text" class="form-control" name="matraicay" value="{{row.0}}">
+                          </div>
+                            <div class=" form-group pb-3">
+                            <label >Tên trái cây</label>
+                            <input type="text" class="form-control" name="tentraicay" value="{{row.1}}">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Hình Ảnh</label>
+                            <input type="file" class="form-control" name="hinhanh" value="{{row.2}}">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" value="{{row.3}}">
+                          </div>
+                             <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+{% endblock %}

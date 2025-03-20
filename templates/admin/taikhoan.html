@@ -1,0 +1,227 @@
+{% extends "admin/base.html" %}
+{% block head %}
+    <title>Danh sách tài khoản người dùng</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Tài Khoản Người Dùng</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+            <li class="breadcrumb-item active text-white">Danh Sách Tài Khoản</li>
+        </ol>
+    </div>
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container-fluid fruite">
+        <div class="container py-3">
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4 mb-4">
+                        <div class="col-xl-3">
+                            <button class="btn btn-primary p-3 text-white" data-bs-toggle="modal" data-bs-target="#myModal">Thêm tài khoản</button>
+                        </div>
+                        <div class="col-6">
+                            <form method="GET" action="{{ url_for('taikhoan.list_accounts') }}" class="input-group w-100 mx-auto d-flex">
+                                <input type="search" name="timkiem" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Họ và Tên</th>
+                                    <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Số điện thoại</th>
+                                    <th scope="col">Chức vụ</th>
+                                    <th scope="col">Tên tài khoản</th>
+                                    <th scope="col">Quyền</th>
+                                    <th scope="col">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.id }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.ten_nguoi_dung }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.diachi }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.email }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.so_dien_thoai }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.chuc_vu }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.ten_tai_khoan }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ user.ten_quyen }}</p>
+                                    </td>
+                                    <td>
+                                        <a class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editAccountModal{{ user.id }}">
+                                        Sửa
+                                     </a>
+                                     
+                                        <a href="/delete_account/{{ user.id }}" class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary">Xóa</a>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Sửa Tài Khoản -->
+                                <div class="modal fade" id="editAccountModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Sửa Tài Khoản</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form action="{{ url_for('taikhoan.update_account', user_id=user.id) }}" method="post">
+                                                <div class="modal-body">
+                                                    <label>Họ và Tên:</label>
+                                                    <input type="text" name="ten_nguoi_dung" class="form-control mb-2" value="{{ user.ten_nguoi_dung }}" required>
+                                                    
+                                                    <label>Email:</label>
+                                                    <input type="email" name="email" class="form-control mb-2" value="{{ user.email }}" required>
+                                                    
+                                                    <label>Số điện thoại:</label>
+                                                    <input type="text" name="so_dien_thoai" class="form-control mb-2" value="{{ user.so_dien_thoai }}">
+                                                    
+                                                    <label>Địa chỉ:</label>
+                                                    <input type="text" name="dia_chi" class="form-control mb-2" value="{{ user.dia_chi }}">
+                                                    
+                                                    <label>Chức vụ:</label>
+                                                    <input type="text" name="chuc_vu" class="form-control mb-2" value="{{ user.chuc_vu }}">
+                                                    
+                                                    <label>Quyền:</label>
+                                                    <select name="ma_quyen" class="form-control mb-2">
+                                                        {% for quyen in danh_sach_quyen %}
+                                                            <option value="{{ quyen.ma_quyen }}" {% if user.ma_quyen == quyen.ma_quyen %}selected{% endif %}>
+                                                                {{ quyen.ten_quyen }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-primary" type="submit" style="color:white">Cập Nhật</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal thêm tài khoản -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-0">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm tài khoản mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('taikhoan.add_account') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Họ và Tên</label>
+                                <input type="text" name="ten_nguoi_dung" class="form-control" placeholder="Nhập họ và tên" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control" placeholder="Nhập email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Số điện thoại</label>
+                                <input type="text" name="so_dien_thoai" class="form-control" placeholder="Nhập số điện thoại" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Mật khẩu</label>
+                                <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Địa chỉ</label>
+                                <input type="text" name="dia_chi" class="form-control" placeholder="Nhập địa chỉ">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Nhập lại mật khẩu</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Nhập lại mật khẩu" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Chức vụ</label>
+                                <input type="text" name="chuc_vu" class="form-control" placeholder="Nhập chức vụ">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Quyền</label>
+                                <select name="ma_quyen" class="form-control" required>
+                                    <option value="">Chọn quyền</option>
+                                    {% for quyen in danh_sach_quyen %}
+                                        <option value="{{ quyen['ma_quyen'] }}">{{ quyen['ten_quyen'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                                            
+                            </div>
+                        </div>
+                        <div class="form-group text-center mt-3">
+                            <button type="submit" class="btn btn-primary" style="color:white">Đăng Ký</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript kiểm tra mật khẩu -->
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirm_password = document.getElementById("confirm_password").value;
+            var errorText = document.getElementById("password-error");
+
+            if (password !== confirm_password) {
+                errorText.classList.remove("d-none");
+                return false;
+            } else {
+                errorText.classList.add("d-none");
+                return true;
+            }
+        }
+    </script>
+
+{% endblock %}

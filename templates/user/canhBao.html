@@ -1,0 +1,110 @@
+{% extends "admin/base.html" %}
+{% block head %}
+    <title>Cảnh Báo</title>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Cảnh Báo</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="#">Theo Dõi Hàng Hóa</a></li>
+                <li class="breadcrumb-item active text-white">Cảnh Báo</li>
+            </ol>
+        </div>
+       <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite">
+            <div class="container py-3">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3">
+                                 </div>
+                            <div class="col-6">
+                                <form method="GET" action="{{ url_for('khayhang.khayhang_view') }}" class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" name="timkiem2" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                    <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="row g-4 justify-content-center">
+
+                                        <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col">Mã Cảnh Báo</th>
+                                                <th scope="col">Mã Hình Ảnh</th>
+                                                <th scope="col">Mức Độ Cảnh Báo</th>
+                                                <th scope="col">Nội Dung</th>
+                                                <th scope="col">Ngày Phát Hiện</th>
+                                                <th scope="col">Trạng Thái</th>
+                                              </tr>
+                                            </thead>
+                                            {% for row in canhbao %}
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.0 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.1 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.2 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.4 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.5 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <button class="status-btn btn {% if row[6] == 'Đã xử lý' %}btn-success{% else %}btn-warning{% endif %}"
+                                                                data-id="{{ row[0] }}">
+                                                            {{ row[6] }}
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".status-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let id = this.getAttribute("data-id");
+            let btn = this;
+
+            fetch(`/update_status?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    btn.textContent = "Đã xử lý";
+                    btn.classList.remove("btn-warning");
+                    btn.classList.add("btn-success");
+                    btn.disabled = true;
+                } else {
+                    alert("Cập nhật thất bại!");
+                }
+            })
+            .catch(error => console.error("Lỗi:", error));
+        });
+    });
+});
+</script>
+
+{% endblock %}

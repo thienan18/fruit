@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Thông tin loại trái cây</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Thông Tin Khay Hàng</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a href="#">Danh Mục</a></li>
+            <li class="breadcrumb-item active text-white">Thông Tin Khay Hàng</li>
+        </ol>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+    <div class="container-fluid fruite">
+        <div class="container py-3">
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4 mb-4">
+                        <div class="col-xl-3">
+                            <button class="btn btn-primary p-3 text-white" data-bs-toggle="modal" data-bs-target="#myModal">Thêm khay hàng</button>
+                        </div>
+                        <div class="col-6">
+                            <form method="GET" action="{{ url_for('khayhang.khayhang_view') }}" class="input-group w-100 mx-auto d-flex">
+                                <input type="search" name="timkiem2" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4 justify-content-center">
+
+                                    <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">Mã khay hàng</th>
+                                            <th scope="col">Tên khay hàng</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th scope="col">Trạng thái</th>
+                                            <th scope="col">Ghi chú</th>
+                                            <th scope="col">Tên loại trái cây</th>
+                                            <th scope="col">Hành động</th>
+                                          </tr>
+                                        </thead>
+                                        {% for row in khayhang %}
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ row.0 }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ row.1 }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ row.2 }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ "Còn hàng" if row.2 > 0 else "Hết hàng" }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ row.4 }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 mt-4">{{ row.6 }}</p>
+                                                </td>
+                                                <td>
+                                                    <a href="/update3/{{ row.0 }}" class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary" data-bs-toggle="modal" data-bs-target="#modaledit{{row.0}}">Sửa</a>
+                                                    <a href="/delete3/{{ row.0 }}" class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary">Xóa</a>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-0">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm loại trái cây</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('khayhang.insert3') }}" method="POST">
+                        <div class="form-group pb-3">
+                            <label>Tên khay hàng</label>
+                            <input type="text" class="form-control" name="tenkhay" placeholder="Tên khay">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Số lượng</label>
+                            <input type="number" class="form-control" name="soluong" placeholder="Số lượng">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" placeholder="Ghi chú">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Mã loại</label>
+                            <select class="form-control" name="tenloai">
+                                {% for roww in loaitraicay %}
+                                    <option value="{{ roww.1 }}">{{ roww.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for row in khayhang %}
+    <div class="modal fade" id="modaledit{{row.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-0">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sửa khay hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('khayhang.update3') }}" method="POST">
+                        <div class="form-group pb-3">
+                            <label>Mã khay hàng</label>
+                            <input type="text" class="form-control" name="makhay" value="{{row.0}}" readonly>
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Tên khay hàng</label>
+                            <input type="text" class="form-control" name="tenkhay" value="{{row.1}}">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Số lượng</label>
+                            <input type="number" class="form-control" name="soluong" value="{{row.2}}">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" value="{{row.4}}">
+                        </div>
+                        <div class="form-group pb-3">
+                            <label>Mã loại</label>
+                            <select class="form-control" name="tenloai">
+                                {% for roww in loaitraicay %}
+                                    <option value="{{ roww.1 }}" {% if row.5 == roww.1 %} selected {% endif %}>{{ roww.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

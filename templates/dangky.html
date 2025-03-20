@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>FreshCheck AI - Đăng Ký</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(rgba(214, 247, 223, 0.7), rgba(214, 247, 223, 0.7));
+        }
+        .container {
+            max-width: 700px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .row {
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="text-center">Đăng Ký Tài Khoản</h3>
+
+        <!-- Hiển thị thông báo từ Flask Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('dangky') }}" method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Họ và Tên</label>
+                    <input type="text" name="ten_nguoi_dung" class="form-control" placeholder="Nhập họ và tên" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Nhập email" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Số điện thoại</label>
+                    <input type="text" name="so_dien_thoai" class="form-control" placeholder="Nhập số điện thoại" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Mật khẩu</label>
+                    <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Địa chỉ</label>
+                    <input type="text" name="dia_chi" class="form-control" placeholder="Nhập địa chỉ">
+                </div>
+                <div class="col-md-6">
+                    <label>Nhập lại mật khẩu</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Nhập lại mật khẩu" required>
+                    <span id="password-error" class="error-message">Mật khẩu không khớp!</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Chức vụ</label>
+                    <input type="text" name="chuc_vu" class="form-control" placeholder="Nhập chức vụ">
+                </div>
+            </div>
+            <div class="form-group text-center mt-3">
+                <button type="submit" class="btn btn-primary" style="color:white">Đăng Ký</button>
+            </div>
+            <p class="text-center mt-2">Bạn đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập tại đây</a></p>
+        </form>
+    </div>
+
+
+    <!-- JavaScript kiểm tra mật khẩu -->
+    <script>
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var errorMessage = document.getElementById("password-error");
+
+            if (password !== confirmPassword) {
+                errorMessage.style.display = "block";
+                return false; // Ngăn form gửi nếu mật khẩu không khớp
+            } else {
+                errorMessage.style.display = "none";
+                return true;
+            }
+        }
+    </script>
+</html>
+
+
+

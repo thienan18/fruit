@@ -1,0 +1,125 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <title>Nhận diện Trái Cây</title>
+    <style>
+        .card img {
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .card img:hover {
+            transform: scale(1.05);
+        }
+        .container-custom {
+            max-width: 900px;
+            margin: auto;
+        }
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+        .preview-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Phát Hiện Trái Cây Hư Hỏng</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="#">Theo Dõi Hàng Hóa</a></li>
+                <li class="breadcrumb-item active text-white">Phát Hiện Trái Cây Hư Hỏng</li>
+            </ol>
+        </div>
+
+    <div class="container container-custom pt-5">
+        <div class="d-flex justify-content-center gap-4">
+            <button class="btn btn-outline-primary btn-custom" id="btnDetectVideo">Nhận diện từ Video</button>
+            <button class="btn btn-primary btn-custom" id="btnDetectUpload">Nhận diện từ Ảnh</button>
+        </div>
+    </div>
+
+    <div class="container container-custom mt-4">
+        <!-- Nhận diện qua Camera -->
+        <div id="cameraSection" style="display: none;">
+            <h3 class="text-center">Nhận diện qua Camera</h3>
+            <div class="text-center mb-3">
+                <button class="btn btn-primary btn-custom" id="startBtn" onclick="startCamera()">Bật Camera</button>
+                <button class="btn btn-danger btn-custom" id="stopBtn" onclick="stopCamera()" style="display: none;">Tắt Camera</button>
+            </div>
+            <div class="preview-box text-center">
+                <img id="video" src="" class="img-fluid" alt="Camera sẽ hiển thị tại đây">
+            </div>
+        </div>
+
+        <!-- Upload ảnh -->
+        <div id="uploadSection">
+            <h3 class="text-center">Upload để Nhận diện</h3>
+            <form id="uploadForm" action="{{ url_for('nhanDien.upload_files') }}" method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
+                <div class="mb-3">
+                    <label for="traySelect" class="form-label fw-bold">Chọn khay hàng:</label>
+                    <select id="traySelect" name="khayhang" class="form-select">
+                        {% for row in khayhang %}
+                            <option value="{{ row[0] }}">{{ row[1] }}</option>
+                        {% endfor %}
+                    </select>                    
+                </div>
+                <div class="mb-3">
+                    <input type="file" id="fileInput" name="files" multiple accept="image/*" class="form-control">
+                </div>
+                <button type="submit" id="uploadBtn" class="btn btn-primary btn-custom w-100" disabled>Upload</button>
+            </form>
+        </div>
+        
+
+    </div>
+        {% if uploaded %}
+            <h3 class="mt-4 text-center">Kết quả nhận diện</h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for image in detected_images %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="{{ image }}" class="card-img-top" alt="Kết quả nhận diện" onclick="openModal('{{ image }}')">
+                    <div class="card-body text-center">
+                        <p class="fw-bold text-success">Kết quả nhận diện</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+{% endif %}
+
+    </div>
+
+    <script>
+        document.getElementById("btnDetectVideo").addEventListener("click", function() {
+            document.getElementById("cameraSection").style.display = "block";
+            document.getElementById("uploadSection").style.display = "none";
+        });
+        document.getElementById("btnDetectUpload").addEventListener("click", function() {
+            document.getElementById("cameraSection").style.display = "none";
+            document.getElementById("uploadSection").style.display = "block";
+            stopCamera();
+        });
+        function startCamera() {
+            document.getElementById("video").src = "/video_feed";
+            document.getElementById("startBtn").style.display = "none";
+            document.getElementById("stopBtn").style.display = "inline";
+        }
+        function stopCamera() {
+            document.getElementById("video").src = "";
+            document.getElementById("startBtn").style.display = "inline";
+            document.getElementById("stopBtn").style.display = "none";
+        }
+        document.getElementById("fileInput").addEventListener("change", function() {
+            document.getElementById("uploadBtn").disabled = this.files.length === 0;
+        });
+    </script>
+{% endblock %}

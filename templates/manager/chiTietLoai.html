@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Thông tin loại trái cây</title>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Thông Tin Loại Trái Cây</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="#">Danh Mục</a></li>
+                <li class="breadcrumb-item active text-white">Thông Tin Loại Trái Cây</li>
+            </ol>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+       <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite ">
+            <div class="container py-3">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3">
+                                <button class="btn btn-primary p-3 text-white " data-bs-toggle="modal" data-bs-target="#myModal">Thêm trái cây</button>
+                            </div>
+                            <div class="col-6">
+                                <form method="GET" action="{{ url_for('chiTietLoai.chitiet') }}" class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" name="timkiem1" class="form-control p-3" placeholder="Nhập từ khóa tìm kiếm..." value="{{ search_query }}">
+                                    <button type="submit" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="row g-4 justify-content-center">
+
+                                        <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th scope="col"></th>
+                                                <th scope="col">Mã loại</th>
+                                                <th scope="col">Tên loại</th>
+                                                <th scope="col">Xuất xứ</th>
+                                                <th scope="col">Số lượng</th>
+                                                <th scope="col">Tên trái cây</th>
+                                                <th scope="col">Ghi chú</th>
+                                                <th scope="col">Hành động</th>
+                                              </tr>
+                                            </thead>
+                                            {% for row in loaitraicay %}
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ url_for('static', filename='img/' + row.5 if row.5 and row.5 != 'None' else 'img/apple.jpg') }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.0 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.1 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.2 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.8 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.7 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 mt-4">{{ row.3 }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/update/{{ row.0 }}" class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary" data-bs-toggle="modal" data-bs-target="#modaledit{{row.0}}">Sửa</a>
+                                                        <a href="/delete/{{ row.0 }}" class="btn border border-secondary rounded-pill mb-0 mt-4 text-primary">Xóa</a>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+<!--Insert-->
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div  class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Thêm loại trái cây</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('chiTietLoai.insert') }}" method="POST">
+                            <div class=" form-group pb-3">
+                            <label >Tên loại</label>
+                            <input type="text" class="form-control" name="tenloai" placeholder="tên loại">
+                          </div>
+                            <div class=" form-group pb-3">
+                            <label >Xuất xứ</label>
+                            <input type="text" class="form-control" name="xuatxu" placeholder="xuất xứ">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Hình Ảnh</label>
+                            <input type="file" class="form-control" name="hinhanh" placeholder="hình ảnh">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" placeholder="ghi chú">
+                          </div>
+                          <div class="form-group pb-3">
+                            <label>Tên trái cây</label>
+                            <select class="form-control" name="tentraicay">
+                                {% for roww in traicay %}
+                                    <option value="{{ roww.1 }}">{{ roww.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                             <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--Update-->
+{% for row in loaitraicay %}
+        <div class="modal fade" id="modaledit{{row.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sửa loại trái cây</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('chiTietLoai.update') }}" method="POST">
+                          <div class=" form-group pb-3">
+                            <label>Mã loại</label>
+                            <input type="text" class="form-control" name="maloai" value="{{row.0}}">
+                          </div>
+                            <div class=" form-group pb-3">
+                            <label >Tên loại</label>
+                            <input type="text" class="form-control" name="tenloai" value="{{row.1}}">
+                          </div>
+                            <div class=" form-group pb-3">
+                            <label >Xuất xứ</label>
+                            <input type="text" class="form-control" name="xuatxu" value="{{row.2}}">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Hình Ảnh</label>
+                            <input type="file" class="form-control" name="hinhanh" value="">
+                          </div>
+                          <div class=" form-group pb-3">
+                            <label >Ghi chú</label>
+                            <input type="text" class="form-control" name="ghichu" value="{{row.3}}">
+                          </div>
+                          <div class="form-group pb-3">
+                            <label>Tên trái cây</label>
+                            <select class="form-control" name="tentraicay">
+                                {% for roww in traicay %}
+                                    <option value="{{ roww.1 }}" {% if row.7 == roww.1 %} selected {% endif %}>
+                                        {{ roww.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                             <button class="btn btn-primary mb-3 text-white" type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+{% endblock %}
